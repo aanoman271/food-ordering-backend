@@ -3,7 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import dbConnect from "./mongodb/db.js";
 import router from "./routes/authRoutes.js";
-
+import foodRouter from "./routes/foodRouter.js";
 dotenv.config();
 
 const app = express();
@@ -17,6 +17,7 @@ dbConnect();
 
 // routes
 app.use("/api/auth", router);
+app.use("/api/foods", foodRouter);
 
 app.get("/", (req, res) => {
   res.send("Backend is working");
