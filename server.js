@@ -4,8 +4,8 @@ import dotenv from "dotenv";
 import dbConnect from "./mongodb/db.js";
 import router from "./routes/authRoutes.js";
 import foodRouter from "./routes/foodRouter.js";
-import { createOrder, getMyOrders } from "./controllers/ordercontroler.js";
-import { protect } from "./middleware/authMiddleWare.js";
+import orderRouter from "./routes/orderRouter.js";
+import paymentRouter from "./routes/paymentRouter.js";
 dotenv.config();
 
 const app = express();
@@ -20,9 +20,8 @@ dbConnect();
 // routes
 app.use("/api/auth", router);
 app.use("/api/foods", foodRouter);
-
-router.post("/", protect, createOrder);
-router.get("/myorders", protect, getMyOrders);
+app.use("/api/orders", orderRouter);
+app.use("/api/payment", paymentRouter);
 app.get("/", (req, res) => {
   res.send("Backend is working");
 });
