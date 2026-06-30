@@ -1,6 +1,11 @@
 import crypto from "crypto";
+import Order from "../models/order.js";
 
 export const payhereNotify = async (req, res) => {
+  console.log("========== WEBHOOK HIT ==========");
+  console.log(req.method);
+  console.log(req.headers);
+  console.log(req.body);
   try {
     // data from payhere
     const {
@@ -12,7 +17,14 @@ export const payhereNotify = async (req, res) => {
       status_code,
       md5sig,
     } = req.body;
-    const merchantSecret = process.env.PAYHERE_SECRET;
+    const merchantSecret = process.env.PAYHERE_MERCHANT_SECRET;
+    // PayHere-এর নিয়ম অনুযায়ী Secret কি-কে uppercase MD5 করতে হয় প্রথমে
+    const hashedSecret = crypto
+      .createHash("md5")
+      .update(merchantSecret)
+      .digest("hex")
+      .toUpperCase();
+
     const localSignatureSource =
       merchant_id +
       order_id +
@@ -20,12 +32,7 @@ export const payhereNotify = async (req, res) => {
       payhere_currency +
       status_code +
       hashedSecret;
-    // PayHere-এর নিয়ম অনুযায়ী Secret কি-কে uppercase MD5 করতে হয় প্রথমে
-    const hashedSecret = crypto
-      .createHash("md5")
-      .update(merchantSecret)
-      .digest("hex")
-      .toUpperCase();
+
     const localSignature = crypto
       .createHash("md5")
       .update(localSignatureSource)
@@ -59,7 +66,7 @@ export const payhereNotify = async (req, res) => {
       return res.status(400).send("Invalid Signature");
     }
   } catch (err) {
-    console.error("PayHere Notification Error:", err.message);
-    res.status(500).send("Server Error");
+    console.error("PayHere Notification Error:", err);
+    res.status(500).send(err.message);
   }
 };

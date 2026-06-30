@@ -1,7 +1,7 @@
 //    Create a new order
 //    POST /api/orders
 
-import Order from "../models/Order";
+import Order from "../models/order.js";
 
 export const createOrder = async (req, res) => {
   try {
@@ -20,7 +20,7 @@ export const createOrder = async (req, res) => {
       payhereOrderId,
     });
 
-    const createdOrder = await Order.save();
+    const createdOrder = await order.save();
 
     res.status(201).json({
       message: "Order initiated successfully",

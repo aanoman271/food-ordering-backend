@@ -1,11 +1,11 @@
 import express from "express";
-import { admin, protect } from "../middleware/authMiddleWare";
+import { admin, protect } from "../middleware/authMiddleWare.js";
 import {
   createOrder,
   getAllOrders,
   getMyOrders,
   updateOrderStatus,
-} from "../controllers/ordercontroler";
+} from "../controllers/ordercontroler.js";
 const router = express.Router();
 // cusomer
 router.post("/", protect, createOrder);
